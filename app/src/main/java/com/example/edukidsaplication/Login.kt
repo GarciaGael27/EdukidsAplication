@@ -85,7 +85,6 @@ fun RegisterScreen(onBackToLogin: () -> Unit, onRegisterSuccess: () -> Unit = {}
             Spacer(modifier = Modifier.height(18.dp))
             Button(
                 onClick = {
-                    // Aquí podrías guardar el usuario
                     if (user.isNotBlank() && name.isNotBlank() && lastName.isNotBlank()) onRegisterSuccess()
                 },
                 modifier = Modifier
