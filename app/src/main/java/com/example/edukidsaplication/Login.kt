@@ -19,11 +19,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun RegisterScreen(onBackToLogin: () -> Unit) {
+fun RegisterScreen(onBackToLogin: () -> Unit, onRegisterSuccess: () -> Unit = {}) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -39,19 +40,17 @@ fun RegisterScreen(onBackToLogin: () -> Unit) {
         ) {
             Box(
                 modifier = Modifier
-                    .size(120.dp)
+                    .size(250.dp)
                     .background(
-                        brush = Brush.linearGradient(
-                            colors = listOf(Color(0xFF1CD8D2), Color(0xFF93EDC7))
-                        ),
+                        Color.White,
                         shape = RoundedCornerShape(60.dp)
                     ),
                 contentAlignment = Alignment.Center
             ) {
                 Image(
-                    painter = painterResource(id = android.R.drawable.ic_menu_info_details), // Cambia por tu logo
+                    painter = painterResource(id = R.drawable.logo_contexto),
                     contentDescription = "Logo EduKids",
-                    modifier = Modifier.size(80.dp),
+                    modifier = Modifier.size(250.dp),
                     contentScale = ContentScale.Fit
                 )
             }
@@ -60,8 +59,8 @@ fun RegisterScreen(onBackToLogin: () -> Unit) {
             Text("¡Crea tu cuenta para aprender!", fontSize = 15.sp, color = Color.Gray)
             Spacer(modifier = Modifier.height(24.dp))
             var user by remember { mutableStateOf("") }
-            var email by remember { mutableStateOf("") }
-            var pass by remember { mutableStateOf("") }
+            var name by remember { mutableStateOf("") }
+            var lastName by remember { mutableStateOf("") }
             OutlinedTextField(
                 value = user,
                 onValueChange = { user = it },
@@ -71,24 +70,26 @@ fun RegisterScreen(onBackToLogin: () -> Unit) {
             )
             Spacer(modifier = Modifier.height(12.dp))
             OutlinedTextField(
-                value = email,
-                onValueChange = { email = it },
-                label = { Text("Correo electrónico") },
+                value = name,
+                onValueChange = { name = it },
+                label = { Text("Nombre") },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth()
             )
             Spacer(modifier = Modifier.height(12.dp))
             OutlinedTextField(
-                value = pass,
-                onValueChange = { pass = it },
-                label = { Text("Contraseña") },
+                value = lastName,
+                onValueChange = { lastName = it },
+                label = { Text("Apellido") },
                 singleLine = true,
-                visualTransformation = PasswordVisualTransformation(),
                 modifier = Modifier.fillMaxWidth()
             )
             Spacer(modifier = Modifier.height(18.dp))
             Button(
-                onClick = { /* Acción de registro */ },
+                onClick = {
+                    // Aquí podrías guardar el usuario
+                    if (user.isNotBlank() && name.isNotBlank() && lastName.isNotBlank()) onRegisterSuccess()
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(48.dp),
@@ -114,18 +115,17 @@ fun RegisterScreen(onBackToLogin: () -> Unit) {
 }
 
 @Composable
-fun LoginRegisterSwitcher() {
+fun LoginRegisterSwitcher(onLoginSuccess: () -> Unit = {}) {
     var showLogin by remember { mutableStateOf(true) }
     if (showLogin) {
-        LoginScreen(onRegisterClick = { showLogin = false })
+        LoginScreen(onRegisterClick = { showLogin = false }, onLoginSuccess = onLoginSuccess)
     } else {
-        RegisterScreen(onBackToLogin = { showLogin = true })
+        RegisterScreen(onBackToLogin = { showLogin = true }, onRegisterSuccess = onLoginSuccess)
     }
 }
 
-// Modifica LoginScreen para aceptar onRegisterClick
 @Composable
-fun LoginScreen(onRegisterClick: () -> Unit = {}) {
+fun LoginScreen(onRegisterClick: () -> Unit = {}, onLoginSuccess: () -> Unit = {}) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -141,19 +141,16 @@ fun LoginScreen(onRegisterClick: () -> Unit = {}) {
         ) {
             Box(
                 modifier = Modifier
-                    .size(120.dp)
-                    .background(
-                        brush = Brush.linearGradient(
-                            colors = listOf(Color(0xFF1CD8D2), Color(0xFF93EDC7))
-                        ),
+                    .size(250.dp)
+                    .background( color = Color.White,
                         shape = RoundedCornerShape(60.dp)
                     ),
                 contentAlignment = Alignment.Center
             ) {
                 Image(
-                    painter = painterResource(id = android.R.drawable.ic_menu_info_details), // Cambia por tu logo
+                    painter = painterResource(id = R.drawable.logo_sintexto),
                     contentDescription = "Logo EduKids",
-                    modifier = Modifier.size(80.dp),
+                    modifier = Modifier.size(250.dp),
                     contentScale = ContentScale.Fit
                 )
             }
@@ -162,7 +159,6 @@ fun LoginScreen(onRegisterClick: () -> Unit = {}) {
             Text("¡Aprender es divertido!", fontSize = 15.sp, color = Color.Gray)
             Spacer(modifier = Modifier.height(24.dp))
             var user by remember { mutableStateOf("") }
-            var pass by remember { mutableStateOf("") }
             OutlinedTextField(
                 value = user,
                 onValueChange = { user = it },
@@ -170,18 +166,11 @@ fun LoginScreen(onRegisterClick: () -> Unit = {}) {
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth()
             )
-            Spacer(modifier = Modifier.height(12.dp))
-            OutlinedTextField(
-                value = pass,
-                onValueChange = { pass = it },
-                label = { Text("Contraseña") },
-                singleLine = true,
-                visualTransformation = PasswordVisualTransformation(),
-                modifier = Modifier.fillMaxWidth()
-            )
             Spacer(modifier = Modifier.height(18.dp))
             Button(
-                onClick = { /* Acción de login */ },
+                onClick = {
+                    if (user.isNotBlank()) onLoginSuccess()
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(48.dp),
@@ -203,4 +192,12 @@ fun LoginScreen(onRegisterClick: () -> Unit = {}) {
             )
         }
     }
+}
+
+
+@Preview(showBackground = true, device = "id:pixel_9", showSystemUi = true, name = "Pantallita")
+@Composable
+fun LoginScreenPreview() {
+    //LoginScreen()
+    //RegisterScreen(onBackToLogin = {})
 }
