@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "194304409126",
+    "project_id": "edukidsaplication",
+    "storage_bucket": "edukidsaplication.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:194304409126:android:47932d34ef921bec1bf0e7",
+        "android_client_info": {
+          "package_name": "com.example.edukidsaplication"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCR0m5OOKzujkfCK843jso0wRmXbexpT5U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
