@@ -32,7 +32,7 @@ class Converters {
         UserProgressEntity::class,
         CategoryProgressEntity::class
     ],
-    version = 2, // Incrementamos la versión de 1 a 2
+    version = 3, // Incrementamos la versión de 2 a 3 para forzar recreación
     exportSchema = false
 )
 @TypeConverters(Converters::class)
@@ -306,6 +306,94 @@ abstract class EduKidsDatabase : RoomDatabase() {
                                     {"num1": 15, "num2": 5, "answer": 3}
                                 ],
                                 "instructions": "Resuelve las siguientes divisiones"
+                            }
+                        """.trimIndent(),
+                        order = 1
+                    )
+                )
+
+                // Contenido adicional para sumas de dos dígitos
+                lessonContents.add(
+                    LessonContentEntity(
+                        contentId = "content_sum_002_1",
+                        lessonId = "sum_002",
+                        content = """
+                            {
+                                "type": "simple_addition",
+                                "problems": [
+                                    {"num1": 12, "num2": 13, "answer": 25},
+                                    {"num1": 24, "num2": 15, "answer": 39},
+                                    {"num1": 31, "num2": 28, "answer": 59},
+                                    {"num1": 17, "num2": 22, "answer": 39},
+                                    {"num1": 45, "num2": 33, "answer": 78}
+                                ],
+                                "instructions": "Resuelve estas sumas de dos dígitos"
+                            }
+                        """.trimIndent(),
+                        order = 1
+                    )
+                )
+
+                // Contenido adicional para restas de dos dígitos
+                lessonContents.add(
+                    LessonContentEntity(
+                        contentId = "content_sub_002_1",
+                        lessonId = "sub_002",
+                        content = """
+                            {
+                                "type": "simple_subtraction",
+                                "problems": [
+                                    {"num1": 25, "num2": 13, "answer": 12},
+                                    {"num1": 39, "num2": 15, "answer": 24},
+                                    {"num1": 58, "num2": 27, "answer": 31},
+                                    {"num1": 46, "num2": 22, "answer": 24},
+                                    {"num1": 73, "num2": 41, "answer": 32}
+                                ],
+                                "instructions": "Resuelve estas restas de dos dígitos"
+                            }
+                        """.trimIndent(),
+                        order = 1
+                    )
+                )
+
+                // Contenido adicional para multiplicaciones con tablas del 6 al 10
+                lessonContents.add(
+                    LessonContentEntity(
+                        contentId = "content_mul_002_1",
+                        lessonId = "mul_002",
+                        content = """
+                            {
+                                "type": "multiplication_table",
+                                "problems": [
+                                    {"num1": 6, "num2": 7, "answer": 42},
+                                    {"num1": 8, "num2": 9, "answer": 72},
+                                    {"num1": 7, "num2": 6, "answer": 42},
+                                    {"num1": 9, "num2": 8, "answer": 72},
+                                    {"num1": 10, "num2": 7, "answer": 70}
+                                ],
+                                "instructions": "Practica las tablas del 6 al 10"
+                            }
+                        """.trimIndent(),
+                        order = 1
+                    )
+                )
+
+                // Contenido para divisiones con resto
+                lessonContents.add(
+                    LessonContentEntity(
+                        contentId = "content_div_002_1",
+                        lessonId = "div_002",
+                        content = """
+                            {
+                                "type": "simple_division",
+                                "problems": [
+                                    {"num1": 14, "num2": 4, "answer": 3},
+                                    {"num1": 17, "num2": 5, "answer": 3},
+                                    {"num1": 23, "num2": 7, "answer": 3},
+                                    {"num1": 19, "num2": 6, "answer": 3},
+                                    {"num1": 26, "num2": 8, "answer": 3}
+                                ],
+                                "instructions": "Estas divisiones pueden tener resto. Escribe solo el cociente (parte entera)"
                             }
                         """.trimIndent(),
                         order = 1

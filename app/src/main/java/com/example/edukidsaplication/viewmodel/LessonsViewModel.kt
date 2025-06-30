@@ -166,21 +166,31 @@ class LessonsViewModel(application: Application) : AndroidViewModel(application)
 
     private fun parseProblems(content: LessonContentEntity) {
         try {
+            Log.d(TAG, "Iniciando parseProblems para contenido: ${content.contentId}")
+            Log.d(TAG, "Contenido JSON: ${content.content}")
+
             val jsonContent = JSONObject(content.content)
 
             // Extraer tipo de ejercicio e instrucciones (solo matemáticas)
             _exerciseType.value = jsonContent.optString("type", "")
             _instructions.value = jsonContent.optString("instructions", "")
 
+            Log.d(TAG, "Tipo de ejercicio: ${_exerciseType.value}")
+            Log.d(TAG, "Instrucciones: ${_instructions.value}")
+
             // Extraer los problemas matemáticos
             val problemsArray = jsonContent.getJSONArray("problems")
             val problemsList = mutableListOf<Problem>()
+
+            Log.d(TAG, "Número de problemas encontrados: ${problemsArray.length()}")
 
             for (i in 0 until problemsArray.length()) {
                 val problemJson = problemsArray.getJSONObject(i)
                 val num1 = problemJson.optInt("num1", 0)
                 val num2 = problemJson.optInt("num2", 0)
                 val answer = problemJson.optInt("answer", 0)
+
+                Log.d(TAG, "Problema $i: num1=$num1, num2=$num2, answer=$answer")
 
                 // Crear una pregunta basada en el tipo de ejercicio matemático
                 val question = when (_exerciseType.value) {
@@ -204,10 +214,12 @@ class LessonsViewModel(application: Application) : AndroidViewModel(application)
             }
 
             _problems.value = problemsList
-            Log.d(TAG, "Problemas matemáticos cargados: ${problemsList.size} problemas")
+            Log.d(TAG, "Problemas matemáticos cargados exitosamente: ${problemsList.size} problemas")
+            Log.d(TAG, "Lista de problemas: $problemsList")
 
         } catch (e: Exception) {
             Log.e(TAG, "Error al parsear problemas matemáticos: ${e.message}")
+            Log.e(TAG, "Stack trace: ", e)
             _problems.value = emptyList()
         }
     }
@@ -390,4 +402,3 @@ class LessonsViewModel(application: Application) : AndroidViewModel(application)
         }
     }
 }
-
