@@ -56,9 +56,9 @@ abstract class EduKidsDatabase : RoomDatabase() {
                     EduKidsDatabase::class.java,
                     "edukids_database"
                 )
-                    .fallbackToDestructiveMigration(false)
-                .allowMainThreadQueries() // Permitir consultas en el hilo principal (solo para desarrollo)
-                .build()
+                    .fallbackToDestructiveMigration(true) // Cambiar a true para recrear la BD
+                    .allowMainThreadQueries() // Permitir consultas en el hilo principal (solo para desarrollo)
+                    .build()
 
                 INSTANCE = instance
 

@@ -10,11 +10,15 @@ import androidx.lifecycle.viewModelScope
 import com.example.edukidsaplication.di.AppModule
 import com.example.edukidsaplication.model.User
 import com.example.edukidsaplication.repository.CategoryWithProgress
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class HomeViewModel(application: Application) : AndroidViewModel(application) {
     private val TAG = "HomeViewModel"
@@ -26,6 +30,9 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
     private val _categories = MutableStateFlow<List<CategoryWithProgress>>(emptyList())
     val categories: StateFlow<List<CategoryWithProgress>> = _categories.asStateFlow()
+
+    private val _categoriesState = MutableStateFlow(CategoriesState())
+    val categoriesState: StateFlow<CategoriesState> = _categoriesState.asStateFlow()
 
     init {
         loadUserData()
@@ -66,11 +73,36 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     private fun loadCategories(userId: String) {
         viewModelScope.launch {
             try {
-                contentRepository.getCategoriesWithProgress(userId).collectLatest { categoriesList ->
-                    _categories.value = categoriesList
-                }
+                _categoriesState.value = _categoriesState.value.copy(isLoading = true)
+
+                // Usar combine para manejar ambos flujos a la vez en lugar de anidados
+                contentRepository.getAllCategories().combine(
+                    contentRepository.getCategoriesWithProgress(userId)
+                ) { _, categoriesWithProgress ->
+                    // Procesar en paralelo utilizando async para mejorar el rendimiento
+                    val updatedCategories = withContext(Dispatchers.Default) {
+                        categoriesWithProgress.map { categoryWithProgress ->
+                            async {
+                                val categoryId = categoryWithProgress.category.categoryId
+                                // Obtener el conteo de lecciones en una corrutina para no bloquear
+                                val totalLessons = contentRepository.getLessonCountForCategory(categoryId)
+                                categoryWithProgress.copy(totalLessons = totalLessons)
+                            }
+                        }.map { it.await() } // Esperar a que todas las operaciones asíncronas terminen
+                    }
+
+                    _categories.value = updatedCategories
+                    _categoriesState.value = _categoriesState.value.copy(
+                        isLoading = false,
+                        error = null
+                    )
+                }.collectLatest { /* El operador combine ya maneja la recolección */ }
             } catch (e: Exception) {
                 Log.e(TAG, "Error al cargar categorías: ${e.message}")
+                _categoriesState.value = _categoriesState.value.copy(
+                    isLoading = false,
+                    error = e.message ?: "Error al cargar categorías"
+                )
             }
         }
     }
@@ -87,6 +119,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
                 // Limpiar la lista de categorías
                 _categories.value = emptyList()
+                _categoriesState.value = CategoriesState()
 
                 Log.d(TAG, "Sesión cerrada correctamente, todos los datos locales eliminados")
             } catch (e: Exception) {
@@ -103,5 +136,10 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
 data class HomeState(
     val isLoading: Boolean = false,
     val user: User? = null,
+    val error: String? = null
+)
+
+data class CategoriesState(
+    val isLoading: Boolean = false,
     val error: String? = null
 )

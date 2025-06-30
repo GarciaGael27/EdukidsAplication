@@ -25,11 +25,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.edukidsaplication.repository.CategoryWithProgress
 import com.example.edukidsaplication.viewmodel.HomeViewModel
+import com.example.edukidsaplication.viewmodel.LessonsViewModel
 
 @Composable
 fun LessonsScreen(
     homeViewModel: HomeViewModel,
-    onLessonClick: (String) -> Unit = {},
+    lessonsViewModel: LessonsViewModel,
+    onNavigateToCategoryLessons: (String, String) -> Unit = { _, _ -> },
     modifier: Modifier = Modifier
 ) {
     val categories by homeViewModel.categories.collectAsState()
@@ -70,7 +72,12 @@ fun LessonsScreen(
                     items(categories) { category ->
                         CategoryCard(
                             category = category,
-                            onClick = { onLessonClick(category.category.categoryId) }
+                            onClick = {
+                                onNavigateToCategoryLessons(
+                                    category.category.categoryId,
+                                    category.category.name
+                                )
+                            }
                         )
                     }
                 }

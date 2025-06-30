@@ -122,3 +122,4 @@ data class CategoryProgressEntity(
     val isCompleted: Boolean = false,
     val lastUpdatedAt: Long = System.currentTimeMillis()
 )
+

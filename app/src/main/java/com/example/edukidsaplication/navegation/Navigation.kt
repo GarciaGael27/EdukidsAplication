@@ -22,13 +22,18 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.edukidsaplication.viewmodel.HomeViewModel
+import com.example.edukidsaplication.viewmodel.LessonsViewModel
 import com.example.edukidsaplication.viewmodel.LoginViewModel
 import com.example.edukidsaplication.viewmodel.RegisterViewModel
+import com.example.edukidsaplication.views.CategoryLessonsScreen
+import com.example.edukidsaplication.views.ExercisesScreen
 import com.example.edukidsaplication.views.HomeScreen
 import com.example.edukidsaplication.views.LessonsScreen
 import com.example.edukidsaplication.views.LoginScreen
@@ -42,6 +47,17 @@ object NavRoutes {
     const val HOME = "home"
     const val LESSONS = "lessons"
     const val SETTINGS = "settings"
+    const val CATEGORY_LESSONS = "category_lessons/{categoryId}/{categoryName}"
+    const val EXERCISES = "exercises/{lessonId}/{lessonTitle}"
+
+    // Funciones auxiliares para construir rutas con parámetros
+    fun categoryLessons(categoryId: String, categoryName: String): String {
+        return "category_lessons/$categoryId/$categoryName"
+    }
+
+    fun exercises(lessonId: String, lessonTitle: String): String {
+        return "exercises/$lessonId/$lessonTitle"
+    }
 }
 
 // Definición de los items de navegación para la barra inferior
@@ -90,6 +106,7 @@ fun AppNavHost() {
     val loginViewModel: LoginViewModel = viewModel()
     val registerViewModel: RegisterViewModel = viewModel()
     val homeViewModel: HomeViewModel = viewModel()
+    val lessonsViewModel: LessonsViewModel = viewModel()
 
     // Verificar si hay un usuario logueado para navegar directamente al home
     LaunchedEffect(loginViewModel.loginState.isLoggedIn) {
@@ -162,7 +179,11 @@ fun AppNavHost() {
                 }
             ) {
                 LessonsScreen(
-                    homeViewModel = homeViewModel
+                    homeViewModel = homeViewModel,
+                    lessonsViewModel = lessonsViewModel,
+                    onNavigateToCategoryLessons = { categoryId, categoryName ->
+                        navController.navigate(NavRoutes.categoryLessons(categoryId, categoryName))
+                    }
                 )
             }
         }
@@ -183,6 +204,50 @@ fun AppNavHost() {
                     }
                 )
             }
+        }
+
+        // Nuevas rutas para lecciones por categoría y ejercicios
+        composable(
+            route = NavRoutes.CATEGORY_LESSONS,
+            arguments = listOf(
+                navArgument("categoryId") { type = NavType.StringType },
+                navArgument("categoryName") { type = NavType.StringType }
+            )
+        ) { backStackEntry ->
+            val categoryId = backStackEntry.arguments?.getString("categoryId") ?: ""
+            val categoryName = backStackEntry.arguments?.getString("categoryName") ?: ""
+
+            CategoryLessonsScreen(
+                categoryId = categoryId,
+                categoryName = categoryName,
+                lessonsViewModel = lessonsViewModel,
+                onNavigateBack = {
+                    navController.popBackStack()
+                },
+                onLessonClick = { lessonId, lessonTitle ->
+                    navController.navigate(NavRoutes.exercises(lessonId, lessonTitle))
+                }
+            )
+        }
+
+        composable(
+            route = NavRoutes.EXERCISES,
+            arguments = listOf(
+                navArgument("lessonId") { type = NavType.StringType },
+                navArgument("lessonTitle") { type = NavType.StringType }
+            )
+        ) { backStackEntry ->
+            val lessonId = backStackEntry.arguments?.getString("lessonId") ?: ""
+            val lessonTitle = backStackEntry.arguments?.getString("lessonTitle") ?: ""
+
+            ExercisesScreen(
+                lessonId = lessonId,
+                lessonTitle = lessonTitle,
+                lessonsViewModel = lessonsViewModel,
+                onNavigateBack = {
+                    navController.popBackStack()
+                }
+            )
         }
     }
 }

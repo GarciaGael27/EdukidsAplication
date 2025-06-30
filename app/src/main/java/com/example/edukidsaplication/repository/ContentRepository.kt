@@ -28,6 +28,11 @@ class ContentRepository(private val context: Context) {
         return categoryDao.getCategoryById(categoryId)
     }
 
+    // Obtener el número de lecciones para una categoría
+    suspend fun getLessonCountForCategory(categoryId: String): Int {
+        return lessonDao.getLessonCountForCategory(categoryId)
+    }
+
     // Lecciones
     fun getLessonsByCategory(categoryId: String): Flow<List<LessonEntity>> {
         return lessonDao.getLessonsByCategory(categoryId)
@@ -121,3 +126,8 @@ data class LessonWithProgress(
     val score: Int,
     val completedAt: Long?
 )
+
+
+
+
+
