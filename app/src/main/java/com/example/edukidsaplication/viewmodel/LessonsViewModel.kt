@@ -139,7 +139,6 @@ class LessonsViewModel(application: Application) : AndroidViewModel(application)
                         }
                         .collectLatest { contents ->
                             if (contents.isNotEmpty()) {
-                                // Por ahora tomamos el primer contenido (podríamos implementar navegación entre contenidos después)
                                 val content = contents.first()
                                 _lessonContent.value = content
 
@@ -402,3 +401,4 @@ class LessonsViewModel(application: Application) : AndroidViewModel(application)
         }
     }
 }
+

@@ -96,7 +96,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
                         isLoading = false,
                         error = null
                     )
-                }.collectLatest { /* El operador combine ya maneja la recolección */ }
+                }.collectLatest {  }
             } catch (e: Exception) {
                 Log.e(TAG, "Error al cargar categorías: ${e.message}")
                 _categoriesState.value = _categoriesState.value.copy(

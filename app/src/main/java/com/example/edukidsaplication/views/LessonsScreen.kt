@@ -12,7 +12,6 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -86,7 +85,6 @@ fun LessonsScreen(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CategoryCard(
     category: CategoryWithProgress,
@@ -124,7 +122,7 @@ fun CategoryCard(
 
             // Progreso
             Text(
-                text = "Progreso: ${category.lessonsCompleted}/${category.totalLessons} lecciones",
+                text = "${category.totalLessons} lecciones",
                 fontSize = 12.sp,
                 color = if (category.isCompleted) Color.Green else Color.Gray,
                 modifier = Modifier.padding(top = 8.dp)

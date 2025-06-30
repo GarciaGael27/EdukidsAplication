@@ -90,9 +90,10 @@ fun ExercisesScreen(
     }
 
     // Mostrar diálogo cuando se completan todos los problemas
-    // Pero solo si realmente has completado alguno en esta sesión
+    // Solo si hay problemas cargados y se han completado realmente
     LaunchedEffect(completedProblems, problems.size) {
-        if (problems.isNotEmpty() && completedProblems >= problems.size && completedProblems > 0) {
+        // NUNCA mostrar diálogo si score o totalProblems es 0
+        if (problems.size > 0 && completedProblems > 0 && completedProblems >= problems.size && score > 0) {
             showCompletionDialog = true
         }
     }
@@ -141,11 +142,14 @@ fun ExercisesScreen(
                         .align(Alignment.Center)
                         .padding(16.dp)
                 )
-            } else if (showCompletionDialog) {
+            } else if (showCompletionDialog && score > 0 && problems.size > 0) {
                 CompletionDialog(
                     score = score,
                     totalProblems = problems.size,
-                    onDismiss = { onNavigateBack() }
+                    onDismiss = {
+                        showCompletionDialog = false
+                        onNavigateBack()
+                    }
                 )
             } else {
                 Column(
@@ -690,8 +694,5 @@ fun CompletionDialog(
         }
     )
 }
-
-
-
 
 

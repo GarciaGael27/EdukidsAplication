@@ -57,7 +57,7 @@ abstract class EduKidsDatabase : RoomDatabase() {
                     "edukids_database"
                 )
                     .fallbackToDestructiveMigration(true) // Cambiar a true para recrear la BD
-                    .allowMainThreadQueries() // Permitir consultas en el hilo principal (solo para desarrollo)
+                    .allowMainThreadQueries()
                     .build()
 
                 INSTANCE = instance
